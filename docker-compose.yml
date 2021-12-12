@@ -8,6 +8,5 @@ services:
       - 9005:9005
     volumes:
       - ./:/app/
-    command: yarn serve
     stdin_open: true
     tty: true
