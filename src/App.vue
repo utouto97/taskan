@@ -1,10 +1,22 @@
 <template>
   <div id="nav">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/about">About</router-link> |
+    <Signout />
   </div>
   <router-view />
 </template>
+
+<script>
+import Signout from "@/components/Signout";
+
+export default {
+  name: "App",
+  components: {
+    Signout,
+  },
+};
+</script>
 
 <style>
 #app {
