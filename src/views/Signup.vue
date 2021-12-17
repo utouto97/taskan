@@ -17,7 +17,11 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  sendEmailVerification,
+} from "firebase/auth";
 
 export default {
   name: "Signin",
@@ -32,6 +36,9 @@ export default {
         .then((userCredential) => {
           const user = userCredential.user;
           console.log("signUp success: ", user);
+          if (!user.emailVerified) {
+            sendEmailVerification(user);
+          }
           router.push("/");
         })
         .catch((e) => {
