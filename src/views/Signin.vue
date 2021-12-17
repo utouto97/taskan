@@ -16,8 +16,8 @@
 
 <script>
 import { ref } from "vue";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "vue-router";
+import { useAuth } from "@/store/auth";
 
 export default {
   name: "Signin",
@@ -26,17 +26,17 @@ export default {
     const password = ref("");
 
     const router = useRouter();
+    const { signIn: _signIn } = useAuth();
 
     const signIn = () => {
-      console.log(email.value, password.value);
-      signInWithEmailAndPassword(getAuth(), email.value, password.value)
+      _signIn(email.value, password.value)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log("signin success: ", user);
+          console.log("signIn success: ", user);
           router.push("/");
         })
         .catch((e) => {
-          console.log("signin error: ", e);
+          console.log("signIn error: ", e);
         });
     };
 

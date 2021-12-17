@@ -3,16 +3,17 @@
 </template>
 
 <script>
-import { getAuth, signOut as firebaseAuthSignOut } from "firebase/auth";
 import { useRouter } from "vue-router";
+import { useAuth } from "@/store/auth";
 
 export default {
   name: "Signout",
   setup() {
     const router = useRouter();
+    const { signOut: _signOut } = useAuth();
 
     const signOut = () => {
-      firebaseAuthSignOut(getAuth());
+      _signOut();
       router.push({ name: "Signin" });
     };
 
