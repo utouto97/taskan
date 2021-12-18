@@ -1,9 +1,10 @@
+t
 <template>
-  <div class="home">
+  <div>
     <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" />
     <div v-for="task in tasks" v-bind:key="task.id">
-      <h1>{{ task.data().title }}</h1>
+      <h1 class="text-blue-800">{{ task.data().title }}</h1>
     </div>
   </div>
 </template>

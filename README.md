@@ -40,3 +40,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - [onAuthStateChanged を Vue のナビゲーションガードに書いたらあらぬところにルーティングされた // Firebase Vue](https://qiita.com/SeaSawTune/items/347e910f88b01e4f0a33)
 - [ウェブサイトで Firebase Authentication を使ってみる](https://firebase.google.com/docs/auth/web/start?authuser=1#sign_in_existing_users)
 - [バージョン 8 からモジュラー WebSDK にアップグレードします](https://firebase.google.com/docs/web/modular-upgrade)
+- [Tailwind CSS エラー「Error: PostCSS plugin postcss-nested requires PostCSS 8.」が発生した場合](https://mebee.info/2021/03/23/post-32231/)
