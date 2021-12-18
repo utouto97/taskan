@@ -22,6 +22,7 @@ import {
   getAuth,
   sendEmailVerification,
 } from "firebase/auth";
+import { addDoc, collection, getFirestore } from "firebase/firestore";
 
 export default {
   name: "Signin",
@@ -30,12 +31,26 @@ export default {
     const password = ref("");
 
     const router = useRouter();
+    const db = getFirestore();
 
     const signUp = () => {
       createUserWithEmailAndPassword(getAuth(), email.value, password.value)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
           const user = userCredential.user;
           console.log("signUp success: ", user);
+
+          // create doc for new user
+          await addDoc(collection(db, "users", user.uid, "tasks"), {
+            title: "Sample Task 1",
+          });
+          await addDoc(collection(db, "users", user.uid, "tasks"), {
+            title: "Sample Task 2",
+          });
+          await addDoc(collection(db, "users", user.uid, "tasks"), {
+            title: "Sample Task 3",
+          });
+
+          // send email for verification if not emailVerified
           if (!user.emailVerified) {
             sendEmailVerification(user);
           }
