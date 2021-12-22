@@ -1,40 +1,41 @@
-t
 <template>
   <div>
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-    <div v-for="task in tasks" v-bind:key="task.id">
-      <h1 class="text-blue-800">{{ task.data().title }}</h1>
-    </div>
+    <TaskCard
+      :loading="loading"
+      :task="loading ? {} : tasks[0].data()"
+      class="mx-auto"
+    />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import HelloWorld from "@/components/HelloWorld.vue";
 import { useAuth } from "@/store/auth";
+import TaskCard from "@/components/TaskCard";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld,
+    TaskCard,
   },
   setup() {
     const db = getFirestore();
     const tasks = ref([]);
+    const loading = ref(true);
     const { user } = useAuth();
 
-    onMounted(async () => {
+    (async () => {
       const snapshot = await getDocs(
         collection(db, "users", user.value.uid, "tasks")
       );
       tasks.value = snapshot.docs;
-    });
+      loading.value = false;
+    })();
 
     return {
       tasks,
+      loading,
     };
   },
 };

@@ -42,12 +42,15 @@ export default {
           // create doc for new user
           await addDoc(collection(db, "users", user.uid, "tasks"), {
             title: "Sample Task 1",
+            description: "This is a sample task (1).",
           });
           await addDoc(collection(db, "users", user.uid, "tasks"), {
             title: "Sample Task 2",
+            description: "This is a sample task (2).",
           });
           await addDoc(collection(db, "users", user.uid, "tasks"), {
             title: "Sample Task 3",
+            description: "This is a sample task (3).",
           });
 
           // send email for verification if not emailVerified
