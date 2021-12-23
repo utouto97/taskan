@@ -29,6 +29,11 @@ const routes = [
     name: "Signup",
     component: () => import("@/views/Signup.vue"),
   },
+  {
+    path: "/addtask",
+    name: "AddTask",
+    component: () => import("@/components/AddTask.vue"),
+  },
 ];
 
 const router = createRouter({

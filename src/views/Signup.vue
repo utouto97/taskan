@@ -22,7 +22,13 @@ import {
   getAuth,
   sendEmailVerification,
 } from "firebase/auth";
-import { addDoc, collection, getFirestore, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+  setDoc,
+} from "firebase/firestore";
 
 export default {
   name: "Signin",
@@ -70,6 +76,11 @@ export default {
             description: "This is a sample task (3).",
             prev: task2.id,
             next: "tail",
+          });
+
+          await setDoc(doc(db, "users", user.uid), {
+            headTask: task1.id,
+            tailTask: task3.id,
           });
 
           // send email for verification if not emailVerified
