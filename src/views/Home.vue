@@ -2,7 +2,7 @@
   <div>
     <TaskCard
       :loading="loading"
-      :task="loading ? {} : tasks[0].data()"
+      :task="loading ? {} : headTask"
       class="mx-auto"
     />
   </div>
@@ -23,19 +23,30 @@ export default {
     const db = getFirestore();
     const tasks = ref([]);
     const loading = ref(true);
+    const headTask = ref({});
     const { user } = useAuth();
 
     (async () => {
       const snapshot = await getDocs(
         collection(db, "users", user.value.uid, "tasks")
       );
-      tasks.value = snapshot.docs;
+      tasks.value = Object.assign(
+        {},
+        ...snapshot.docs.map((doc) => ({ [doc.id]: doc.data() }))
+      );
       loading.value = false;
+      headTask.value =
+        tasks.value[
+          Object.keys(tasks.value).filter(
+            (key) => tasks.value[key].prev == "head"
+          )[0]
+        ];
     })();
 
     return {
       tasks,
       loading,
+      headTask,
     };
   },
 };

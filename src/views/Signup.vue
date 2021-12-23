@@ -22,7 +22,7 @@ import {
   getAuth,
   sendEmailVerification,
 } from "firebase/auth";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { addDoc, collection, getFirestore, setDoc } from "firebase/firestore";
 
 export default {
   name: "Signin",
@@ -40,17 +40,36 @@ export default {
           console.log("signUp success: ", user);
 
           // create doc for new user
-          await addDoc(collection(db, "users", user.uid, "tasks"), {
+          const task1 = await addDoc(
+            collection(db, "users", user.uid, "tasks"),
+            {}
+          );
+          const task2 = await addDoc(
+            collection(db, "users", user.uid, "tasks"),
+            {}
+          );
+          const task3 = await addDoc(
+            collection(db, "users", user.uid, "tasks"),
+            {}
+          );
+
+          await setDoc(task1, {
             title: "Sample Task 1",
             description: "This is a sample task (1).",
+            prev: "head",
+            next: task2.id,
           });
-          await addDoc(collection(db, "users", user.uid, "tasks"), {
+          await setDoc(task2, {
             title: "Sample Task 2",
             description: "This is a sample task (2).",
+            prev: task1.id,
+            next: task3.id,
           });
-          await addDoc(collection(db, "users", user.uid, "tasks"), {
+          await setDoc(task3, {
             title: "Sample Task 3",
             description: "This is a sample task (3).",
+            prev: task2.id,
+            next: "tail",
           });
 
           // send email for verification if not emailVerified
