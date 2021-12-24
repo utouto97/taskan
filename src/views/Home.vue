@@ -6,19 +6,7 @@
       class="mx-auto"
     />
   </div>
-  <div>
-    <div
-      v-for="key in orderedKeys"
-      :key="key"
-      class="w-min mx-auto mt-2 px-4 py-2 border rounded text-sm text-gray-600"
-    >
-      <p class="text-lg text-black">{{ key }}</p>
-      <p>title: {{ tasks[key].title }}</p>
-      <p>description: {{ tasks[key].description }}</p>
-      <p>prev: {{ tasks[key].prev }}</p>
-      <p>next: {{ tasks[key].next }}</p>
-    </div>
-  </div>
+  <TaskList :loading="loading" :tasks="tasks" />
 </template>
 
 <script>
@@ -26,17 +14,18 @@ import { ref } from "vue";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { useAuth } from "@/store/auth";
 import TaskCard from "@/components/TaskCard";
+import TaskList from "@/components/TaskList";
 
 export default {
   name: "Home",
   components: {
     TaskCard,
+    TaskList,
   },
   setup() {
     const tasks = ref([]);
     const loading = ref(true);
     const headTask = ref({});
-    const orderedKeys = ref([]);
 
     const db = getFirestore();
     const { user } = useAuth();
@@ -54,17 +43,12 @@ export default {
         (key) => tasks.value[key].prev == "head"
       )[0];
       headTask.value = tasks.value[headKey];
-
-      for (var key = headKey; key != "tail"; key = tasks.value[key].next) {
-        orderedKeys.value.push(key);
-      }
     })();
 
     return {
       tasks,
       loading,
       headTask,
-      orderedKeys,
     };
   },
 };
