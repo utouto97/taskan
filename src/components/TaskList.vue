@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading">
     <div
-      v-for="key in orderedKeys"
+      v-for="key in taskOrder"
       :key="key"
       class="w-min mx-auto mt-2 px-4 py-2 border rounded text-sm text-gray-600"
     >
@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
 export default {
   name: "TaskList",
   props: {
@@ -26,26 +25,11 @@ export default {
       type: Object,
       required: true,
     },
+    taskOrder: {
+      type: Array,
+      required: true,
+    },
   },
-  setup(props) {
-    const orderedKeys = ref([]);
-
-    watch(
-      () => props.loading,
-      () => {
-        const headKey = Object.keys(props.tasks).filter(
-          (key) => props.tasks[key].prev == "head"
-        )[0];
-
-        for (var key = headKey; key != "tail"; key = props.tasks[key].next) {
-          orderedKeys.value.push(key);
-        }
-      }
-    );
-
-    return {
-      orderedKeys,
-    };
-  },
+  setup() {},
 };
 </script>

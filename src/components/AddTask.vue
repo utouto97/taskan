@@ -43,47 +43,26 @@ export default {
     const { user } = useAuth();
 
     const addTask = async () => {
-      const userDoc = await getDoc(doc(db, "users", user.value.uid));
-      const headTask = userDoc.data().headTask;
-      const tailTask = userDoc.data().tailTask;
+      const taskOrder = (await getDoc(doc(db, "users", user.value.uid))).data()
+        .taskOrder;
+
+      const newTask = await addDoc(
+        collection(db, "users", user.value.uid, "tasks"),
+        {
+          title: title.value,
+          description: description.value,
+        }
+      );
 
       if (order.value == "first") {
-        const newTask = await addDoc(
-          collection(db, "users", user.value.uid, "tasks"),
-          {
-            title: title.value,
-            description: description.value,
-            prev: "head",
-            next: headTask,
-          }
-        );
-
-        await updateDoc(doc(db, "users", user.value.uid, "tasks", headTask), {
-          prev: newTask.id,
-        });
-
-        await updateDoc(doc(db, "users", user.value.uid), {
-          headTask: newTask.id,
-        });
+        taskOrder.unshift(newTask.id);
       } else if (order.value == "last") {
-        const newTask = await addDoc(
-          collection(db, "users", user.value.uid, "tasks"),
-          {
-            title: title.value,
-            description: description.value,
-            prev: tailTask,
-            next: "tail",
-          }
-        );
-
-        await updateDoc(doc(db, "users", user.value.uid, "tasks", tailTask), {
-          next: newTask.id,
-        });
-
-        await updateDoc(doc(db, "users", user.value.uid), {
-          tailTask: newTask.id,
-        });
+        taskOrder.push(newTask.id);
       }
+
+      await updateDoc(doc(db, "users", user.value.uid), {
+        taskOrder: taskOrder,
+      });
     };
 
     return {

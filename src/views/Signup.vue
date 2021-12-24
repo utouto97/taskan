@@ -48,39 +48,28 @@ export default {
           // create doc for new user
           const task1 = await addDoc(
             collection(db, "users", user.uid, "tasks"),
-            {}
+            {
+              title: "Sample Task 1",
+              description: "This is a sample task (1).",
+            }
           );
           const task2 = await addDoc(
             collection(db, "users", user.uid, "tasks"),
-            {}
+            {
+              title: "Sample Task 2",
+              description: "This is a sample task (2).",
+            }
           );
           const task3 = await addDoc(
             collection(db, "users", user.uid, "tasks"),
-            {}
+            {
+              title: "Sample Task 3",
+              description: "This is a sample task (3).",
+            }
           );
 
-          await setDoc(task1, {
-            title: "Sample Task 1",
-            description: "This is a sample task (1).",
-            prev: "head",
-            next: task2.id,
-          });
-          await setDoc(task2, {
-            title: "Sample Task 2",
-            description: "This is a sample task (2).",
-            prev: task1.id,
-            next: task3.id,
-          });
-          await setDoc(task3, {
-            title: "Sample Task 3",
-            description: "This is a sample task (3).",
-            prev: task2.id,
-            next: "tail",
-          });
-
           await setDoc(doc(db, "users", user.uid), {
-            headTask: task1.id,
-            tailTask: task3.id,
+            taskOrder: [task1.id, task2.id, task3.id],
           });
 
           // send email for verification if not emailVerified

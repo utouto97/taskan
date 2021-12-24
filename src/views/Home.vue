@@ -2,16 +2,22 @@
   <div>
     <TaskCard
       :loading="loading"
-      :task="loading ? {} : headTask"
+      :task="loading ? {} : tasks[taskOrder[0]]"
       class="mx-auto"
     />
   </div>
-  <TaskList :loading="loading" :tasks="tasks" />
+  <TaskList :loading="loading" :tasks="tasks" :taskOrder="taskOrder" />
 </template>
 
 <script>
 import { ref } from "vue";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+} from "firebase/firestore";
 import { useAuth } from "@/store/auth";
 import TaskCard from "@/components/TaskCard";
 import TaskList from "@/components/TaskList";
@@ -25,7 +31,7 @@ export default {
   setup() {
     const tasks = ref([]);
     const loading = ref(true);
-    const headTask = ref({});
+    const taskOrder = ref([]);
 
     const db = getFirestore();
     const { user } = useAuth();
@@ -38,17 +44,16 @@ export default {
         {},
         ...snapshot.docs.map((doc) => ({ [doc.id]: doc.data() }))
       );
+      taskOrder.value = (
+        await getDoc(doc(db, "users", user.value.uid))
+      ).data().taskOrder;
       loading.value = false;
-      const headKey = Object.keys(tasks.value).filter(
-        (key) => tasks.value[key].prev == "head"
-      )[0];
-      headTask.value = tasks.value[headKey];
     })();
 
     return {
       tasks,
       loading,
-      headTask,
+      taskOrder,
     };
   },
 };
