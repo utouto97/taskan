@@ -6,6 +6,19 @@
       class="mx-auto"
     />
   </div>
+  <div>
+    <div
+      v-for="key in orderedKeys"
+      :key="key"
+      class="w-min mx-auto mt-2 px-4 py-2 border rounded text-sm text-gray-600"
+    >
+      <p class="text-lg text-black">{{ key }}</p>
+      <p>title: {{ tasks[key].title }}</p>
+      <p>description: {{ tasks[key].description }}</p>
+      <p>prev: {{ tasks[key].prev }}</p>
+      <p>next: {{ tasks[key].next }}</p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -20,10 +33,12 @@ export default {
     TaskCard,
   },
   setup() {
-    const db = getFirestore();
     const tasks = ref([]);
     const loading = ref(true);
     const headTask = ref({});
+    const orderedKeys = ref([]);
+
+    const db = getFirestore();
     const { user } = useAuth();
 
     (async () => {
@@ -35,18 +50,21 @@ export default {
         ...snapshot.docs.map((doc) => ({ [doc.id]: doc.data() }))
       );
       loading.value = false;
-      headTask.value =
-        tasks.value[
-          Object.keys(tasks.value).filter(
-            (key) => tasks.value[key].prev == "head"
-          )[0]
-        ];
+      const headKey = Object.keys(tasks.value).filter(
+        (key) => tasks.value[key].prev == "head"
+      )[0];
+      headTask.value = tasks.value[headKey];
+
+      for (var key = headKey; key != "tail"; key = tasks.value[key].next) {
+        orderedKeys.value.push(key);
+      }
     })();
 
     return {
       tasks,
       loading,
       headTask,
+      orderedKeys,
     };
   },
 };
